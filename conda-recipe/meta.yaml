@@ -1,0 +1,49 @@
+{% set version = "1.0.0" %}
+{% set conda_pkg_version = 0 %}
+
+{% set cmake_generator = "$CMAKE_GENERATOR"  %}  # [not win]
+{% set cmake_prefix_path = "$CONDA_PREFIX"  %}  # [not win]
+{% set cmake_install_prefix = "$PREFIX"          %}  # [not win]
+{% set target_all = "all"       %}  # [not win]
+
+package:
+    name: libcsvevent
+    version: {{ version }}
+source:
+    path: ../src
+build:    
+    number: {{ conda_pkg_version }}
+    script:
+        - set -ex
+        - export VERBOSE=1
+        - cmake -E remove_directory build
+        - cmake -E make_directory build
+        - cd build
+        - cmake .. -G"$CMAKE_GENERATOR" 
+              -DCMAKE_BUILD_TYPE=Release 
+              -DCMAKE_PREFIX_PATH={{ cmake_prefix_path }}
+              -DCMAKE_INSTALL_PREFIX={{ cmake_install_prefix }} 
+              -DCMAKE_VERBOSE_MAKEFILE=ON
+              -DCMAKE_AR=${AR}
+              -DCMAKE_RANLIB=${RANLIB}
+              -DCMAKE_MAKE_PROGRAM=${CONDA_PREFIX}/bin/make
+        - cmake --build . --config Release --target all
+        - cmake --build . --config Release --target install
+        - cd ..
+requirements:
+    build:
+        - {{ compiler('cxx') }}
+        - cmake
+        - make
+        - pkg-config
+        - libboost
+        - pugixml
+        - nlohmann_json
+    run:        
+        - libboost
+        - pugixml
+        - nlohmann_json
+about:
+    home: N/A
+    license: PROPRIETARY
+    summary: This is a new project.

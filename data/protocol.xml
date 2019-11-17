@@ -1,0 +1,24 @@
+<!-- 
+A simple protocol with three types of frames.
+
+<host_timestamp>, <event_type>, <pkt_rx>|<pkt_tx>|<pkt_error>
+
+-->
+<eventdef>
+	<timestamp name="host_timestamp"/>	
+	<mnemonic name="event_type"/>
+	<!-- A received packet  -->
+	<condition event_type="PKT_RX">
+		<integer name="length"/>
+		<bytestream length="length"/>	
+	</condition>
+	<!-- A transmitted packet  -->
+	<condition event_type="PKT_TX">
+		<integer name="length"/>
+		<bytestream length="length"/>	
+	</condition>
+	<!--  An error packet -->
+	<condition event_type="PKT_ERROR">
+		<mnemonic name="error_code"/>
+	</condition>	
+</eventdef>
